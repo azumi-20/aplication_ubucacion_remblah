@@ -1,16 +1,16 @@
 class UserEntity {
-  final String uid;
-  final String nombre;
-  final String correo;
-  final String password;
-
   //metodo acceso
   UserEntity({
     required this.correo,
     required this.nombre,
     required this.password,
     required this.uid,
+    required String id,
   });
+  final String uid;
+  final String nombre;
+  final String correo;
+  final String password;
 }
 
 /*
