@@ -17,6 +17,10 @@ dependencies:
   intl: ^0.20.2
   mocktail: ^1.0.4
 
+  # Firebase dependencies
+  firebase_core: ^2.32.0
+  firebase_auth: ^4.8.0
+
 dev_dependencies:
   bloc_test: ^10.0.0
   flutter_test:
