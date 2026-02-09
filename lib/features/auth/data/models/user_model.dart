@@ -6,11 +6,11 @@ class UserModel extends UserEntity {
     required String nombre,
     required String correo,
   }) : super(
-          uid: uid,
-          nombre: nombre,
-          correo: correo,
-          password: '',
-        );
+         uid: uid,
+         nombre: nombre,
+         correo: correo,
+         password: '',
+       );
 
   /// Crear desde Firebase Auth (SIN Firestore)
   factory UserModel.fromFirebaseAuth({
