@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_secure_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:my_secure_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:my_secure_app/features/auth/presentation/bloc/auth_state.dart';
+import 'package:my_secure_app/features/home/presentation/screens/home_screen.dart';
 import 'register_page.dart';
 import 'home_page.dart';
 
@@ -37,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
             );
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (_) => const HomePage()),
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
               (route) => false,
             );
           } else if (state is AuthFailure) {

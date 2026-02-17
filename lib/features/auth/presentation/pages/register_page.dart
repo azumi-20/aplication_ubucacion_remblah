@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_secure_app/features/home/presentation/screens/home_screen.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -53,7 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
             );
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (_) => const HomePage()),
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
               (route) => false,
             );
           } else if (state is AuthFailure) {
