@@ -22,7 +22,7 @@ class TramosScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // banner de contenido offline
+          // banner offline (opcional, pero déjalo igual)
           Container(
             width: double.infinity,
             color: const Color(0xFFE8F5E9),
@@ -39,16 +39,15 @@ class TramosScreen extends StatelessWidget {
               ],
             ),
           ),
-
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('tramos')
-                  .doc('tramo')
-                  .collection('tramo')
                   .snapshots(),
               builder: (context, snapshot) {
+                // Mostrar error si lo hay
                 if (snapshot.hasError) {
+                  print("ERROR en StreamBuilder: ${snapshot.error}");
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
@@ -76,11 +75,8 @@ class TramosScreen extends StatelessWidget {
                     final data = docs[index].data() as Map<String, dynamic>;
 
                     final tramo = TramoModel(
-                      id: data['id']?.toString() ?? docs[index].id,
-
-                      nombre: (data['nombre'] ?? 'Sin nombre')
-                          .toString()
-                          .replaceAll('"', ''),
+                      id: docs[index].id, // usamos el ID del documento
+                      nombre: data['nombre'] ?? 'Sin nombre',
                       distancia: data['distancia'] ?? '0 km',
                       dificultad: data['dificultad'] ?? 'N/A',
                       tiempo: data['tiempo'] ?? '--',
