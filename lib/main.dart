@@ -1,75 +1,44 @@
-/*
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; // generado por flutterfire configure
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Firebase Auth Test',
-      theme: ThemeData(primarySwatch: Colors.green),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Firebase inicializado'),
-        ),
-        body: Center(
-          child: Text(
-            'Firebase está listo para usar 🟢',
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
-      ),
-    );
-  }
-}
-*/
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:my_secure_app/features/auth/presentation/pages/welcome_page.dart';
+import 'package:my_secure_app/features/home/presentation/screens/home_screen.dart';
+
 import 'firebase_options.dart';
 
-import 'package:my_secure_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:my_secure_app/features/auth/data/datasources/firebase_auth_datasource.dart';
-
+import 'package:my_secure_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:my_secure_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:my_secure_app/features/auth/domain/usecases/register_usecase.dart';
 import 'package:my_secure_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:my_secure_app/features/auth/presentation/pages/login_page.dart';
+import 'package:my_secure_app/features/map/presentation/screens/map_screen.dart';
+
+import 'package:my_secure_app/features/auth/presentation/pages/welcome_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Inyeccion del bloc
-
   final authDataSource = FirebaseAuthDatasource();
+  final authRepository = AuthRepositoryImpl(
+    datasource: authDataSource,
+  );
 
-  final authRepository = AuthRepositoryImpl(datasource: authDataSource);
-
-  final loginUC = LoginUseCase(authRepository);
-  final registerUC = RegisterUseCase(authRepository);
+  final loginUseCase = LoginUseCase(authRepository);
+  final registerUseCase = RegisterUseCase(authRepository);
 
   runApp(
-    //Bloc para toda la app
-    BlocProvider(
-      create: (context) => AuthBloc(
-        loginUseCase: loginUC,
-        registerUseCase: registerUC,
+    ProviderScope(
+      child: BlocProvider<AuthBloc>(
+        create: (_) => AuthBloc(
+          loginUseCase: loginUseCase,
+          registerUseCase: registerUseCase,
+        ),
+        child: const MyApp(),
       ),
-      child: const MyApp(),
     ),
   );
 }
@@ -80,27 +49,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Turismo Rural - Camino de los Sueños',
       debugShowCheckedModeBanner: false,
+      title: 'Camino de los Sueños',
       theme: ThemeData(
         useMaterial3: true,
+        // Configuración de colores del manual de estilo
         primaryColor: const Color(0xFF3A5F0B),
+        scaffoldBackgroundColor: const Color(0xFFF5F5DC),
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF3A5F0B),
           primary: const Color(0xFF3A5F0B),
-          secondary: const Color(0xFF6F4E37),
           surface: const Color(0xFFF5F5DC),
-        ),
-
-        textTheme: const TextTheme(
-          displayLarge: TextStyle(
-            color: Color(0xFF3A5F0B),
-            fontWeight: FontWeight.bold,
-          ),
         ),
       ),
 
-      home: const WelcomePage(),
+      //home: const WelcomePage(),
+      home: const HomeScreen(),
     );
   }
 }
