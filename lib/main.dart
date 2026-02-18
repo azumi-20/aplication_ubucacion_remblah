@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+<<<<<<< HEAD
 import 'package:my_secure_app/features/home/presentation/screens/home_screen.dart';
+=======
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
 
 import 'firebase_options.dart';
 
@@ -64,7 +67,12 @@ class MyApp extends StatelessWidget {
       ),
 
       //home: const WelcomePage(),
+<<<<<<< HEAD
       home: const HomeScreen(),
+=======
+      home: const MapScreen(),
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
     );
   }
 }
+

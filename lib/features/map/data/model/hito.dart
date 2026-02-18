@@ -4,6 +4,7 @@ class Hito {
   final String nombre;
   final String descripcion;
   final String descripcionWiki;
+  final String descripcionWiki; 
   final String direccion;
   final String tipos;
   final String estado;
@@ -40,6 +41,7 @@ class Hito {
       nombre: data['nombre'] ?? '',
       descripcion: data['descripcion'] ?? '',
       descripcionWiki: data['descripcionWiki'] ?? '',
+      descripcionWiki: data['descripcionWiki'] ?? '', 
       direccion: data['direccion'] ?? '',
       tipos: data['tipos'] ?? '',
       estado: data['estado'] ?? '',
@@ -59,6 +61,7 @@ class Hito {
       'nombre': nombre,
       'descripcion': descripcion,
       'descripcionWiki': descripcionWiki,
+      'descripcionWiki': descripcionWiki, 
       'direccion': direccion,
       'tipos': tipos,
       'estado': estado,
@@ -76,6 +79,7 @@ class Hito {
     Map<String, dynamic> place, {
     String wikiResumen = '',
   }) {
+  factory Hito.fromPlaces(Map<String, dynamic> place, {String wikiResumen = ''}) {
     final location = place['geometry']['location'];
     final photos = place['photos'] as List?;
     final types = place['types'] as List?;
@@ -85,6 +89,9 @@ class Hito {
               .map((p) => p['photo_reference'] as String? ?? '')
               .where((ref) => ref.isNotEmpty)
               .toList()
+            .map((p) => p['photo_reference'] as String? ?? '')
+            .where((ref) => ref.isNotEmpty)
+            .toList()
         : [];
 
     return Hito(
@@ -95,6 +102,8 @@ class Hito {
       descripcionWiki: wikiResumen,
       direccion:
           place['formatted_address'] ?? place['vicinity'] ?? 'Sin dirección',
+      descripcionWiki: wikiResumen, 
+      direccion: place['formatted_address'] ?? place['vicinity'] ?? 'Sin dirección',
       tipos: types != null ? types.join(', ') : 'Sin clasificación',
       estado: place['business_status'] ?? '',
       lat: (location['lat'] ?? 0).toDouble(),
@@ -106,4 +115,5 @@ class Hito {
       tipo: 'hito',
     );
   }
+}
 }

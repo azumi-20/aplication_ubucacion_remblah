@@ -189,9 +189,12 @@ import 'package:flutter/material.dart';
 import 'package:my_secure_app/features/comunidad/screens/comunidad_screen.dart';
 import 'package:my_secure_app/features/events/presentation/screens/events_screen.dart';
 
+<<<<<<< HEAD
 import 'package:my_secure_app/features/tramos/presentation/screens/tramos_screen.dart';
 import 'package:my_secure_app/features/map/presentation/screens/map_screen.dart';
 
+=======
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
 import '../widgets/featured_map_card.dart';
 import '../widgets/category_card.dart';
 
@@ -203,26 +206,48 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+<<<<<<< HEAD
   int _currentIndex = 1;
+=======
+  //Indice 1 explorar (Home)
+  int _currentIndex = 1;
+
+  // listado de pantallas para el BottomNavigationBar
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
   late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
     _pages = [
+<<<<<<< HEAD
       const MapScreen(), // Índice 0
       const HomeScreenContent(), // Índice 1
       const EventsScreen(), // Índice 2
       const Center(child: Text("Pantalla de Perfil")), // Índice 3
+=======
+      const Center(child: Text("Pantalla de Mapa")), // indice 0
+      const HomeScreenContent(), // indice 1
+      const EventsScreen(), // indice 2
+      const Center(child: Text("Pantalla de Perfil")), // indice 3
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+<<<<<<< HEAD
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
+=======
+      //muestra la pagina segun el indice seleccionado
+      body: _pages[_currentIndex],
+
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // evita que se muevan los iconos
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
         currentIndex: _currentIndex,
         selectedItemColor: const Color(0xFF3A5F0B),
         unselectedItemColor: Colors.grey,
@@ -242,6 +267,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+<<<<<<< HEAD
+=======
+//widget con el home
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
 class HomeScreenContent extends StatelessWidget {
   const HomeScreenContent({super.key});
 
@@ -250,7 +279,14 @@ class HomeScreenContent extends StatelessWidget {
     return SafeArea(
       child: Column(
         children: [
+<<<<<<< HEAD
           _buildCustomAppBar(),
+=======
+          // APP BAR PERSONALIZADA
+          _buildCustomAppBar(),
+
+          // CONTENIDO SCROLLABLE
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -284,6 +320,7 @@ class HomeScreenContent extends StatelessWidget {
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 16,
                     children: [
+<<<<<<< HEAD
                       // 1. TRAMOS
                       GestureDetector(
                         onTap: () => Navigator.push(
@@ -311,12 +348,20 @@ class HomeScreenContent extends StatelessWidget {
                       ),
 
                       // 3. HITOS / QR
+=======
+                      const CategoryCard(icon: Icons.route, title: "Tramos"),
+                      const CategoryCard(icon: Icons.map, title: "Mapa"),
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
                       const CategoryCard(
                         icon: Icons.location_on,
                         title: "Hitos / QR",
                       ),
 
+<<<<<<< HEAD
                       // 4. COMUNIDADES
+=======
+                      // boton de comunidades con navegación a su pantalla
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
                       GestureDetector(
                         onTap: () => Navigator.push(
                           context,
@@ -330,6 +375,7 @@ class HomeScreenContent extends StatelessWidget {
                         ),
                       ),
 
+<<<<<<< HEAD
                       // 5. EVENTOS
                       GestureDetector(
                         onTap: () => Navigator.push(
@@ -344,6 +390,9 @@ class HomeScreenContent extends StatelessWidget {
                         ),
                       ),
 
+=======
+                      const CategoryCard(icon: Icons.event, title: "Eventos"),
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
                       const CategoryCard(icon: Icons.grid_view, title: "Más"),
                     ],
                   ),
@@ -366,7 +415,10 @@ class HomeScreenContent extends StatelessWidget {
     );
   }
 
+<<<<<<< HEAD
   // AppBar personalizada con indicador de offline
+=======
+>>>>>>> 3c5f29eddca0b20dcad913b08ab8003cc1a021c3
   Widget _buildCustomAppBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

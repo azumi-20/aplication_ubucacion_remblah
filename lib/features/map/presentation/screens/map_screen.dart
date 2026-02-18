@@ -59,6 +59,8 @@ class _MapScreenState extends State<MapScreen> {
     final snapshot = await FirebaseFirestore.instance
         .collection('lugares')
         .get();
+    final snapshot =
+        await FirebaseFirestore.instance.collection('lugares').get();
     final List<Hito> lista = snapshot.docs.map((doc) {
       return Hito.fromMap(doc.id, doc.data());
     }).toList();
@@ -117,6 +119,7 @@ class _MapScreenState extends State<MapScreen> {
             cargando = false;
             showCard = false;
           });
+          setState(() { cargando = false; showCard = false; });
           return;
         }
 
@@ -151,6 +154,12 @@ class _MapScreenState extends State<MapScreen> {
           final wikiResumen = await WikipediaApi.getResumen(
             detalle['name'] ?? '',
           );
+            setState(() { cargando = false; showCard = false; });
+            return;
+          }
+
+          final wikiResumen =
+              await WikipediaApi.getResumen(detalle['name'] ?? '');
           final hitoNuevo = Hito.fromPlaces(
             detalle,
             wikiResumen: wikiResumen ?? '',
@@ -164,6 +173,7 @@ class _MapScreenState extends State<MapScreen> {
           setState(() {
             hitos.add(hitoSeleccionado);
           });
+          setState(() { hitos.add(hitoSeleccionado); });
         }
 
         setState(() {
@@ -184,6 +194,11 @@ class _MapScreenState extends State<MapScreen> {
             cargando = false;
             showCard = false;
           });
+
+      } else {
+        // ── SIN INTERNET ──────────────────────────────────────
+        if (hitos.isEmpty) {
+          setState(() { cargando = false; showCard = false; });
           _mostrarSnack('Sin conexión y sin datos guardados');
           return;
         }
@@ -197,6 +212,8 @@ class _MapScreenState extends State<MapScreen> {
             tappedPoint.longitude,
             hito.lat,
             hito.lng,
+            tappedPoint.latitude, tappedPoint.longitude,
+            hito.lat, hito.lng,
           );
           if (distancia < menorDistancia) {
             menorDistancia = distancia;
@@ -209,6 +226,7 @@ class _MapScreenState extends State<MapScreen> {
             cargando = false;
             showCard = false;
           });
+          setState(() { cargando = false; showCard = false; });
           _mostrarSnack('Sin conexión — toca un hito guardado');
           return;
         }
@@ -231,6 +249,7 @@ class _MapScreenState extends State<MapScreen> {
         cargando = false;
         showCard = false;
       });
+      setState(() { cargando = false; showCard = false; });
     }
   }
 
@@ -240,6 +259,7 @@ class _MapScreenState extends State<MapScreen> {
     double lat2,
     double lng2,
   ) {
+      double lat1, double lng1, double lat2, double lng2) {
     final dLat = (lat2 - lat1).abs() * 111000;
     final dLng = (lng2 - lng1).abs() * 111000;
     return (dLat + dLng) / 2;
@@ -339,6 +359,23 @@ class _MapScreenState extends State<MapScreen> {
                       ),
                     ],
                   ),
+                  _circle(Icons.arrow_back,
+                      onTap: () => Navigator.pop(context)),
+                  Row(
+                    children: [
+                      _circle(Icons.my_location, onTap: () {
+                        setState(() {
+                          showCard = true;
+                          cardTitle = "Tu ubicación actual";
+                          buttonText = "Ver ubicación";
+                        });
+                      }),
+                      const SizedBox(width: 8),
+                      _circle(Icons.layers, onTap: () {
+                        setState(() => showPanel = !showPanel);
+                      }),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -405,4 +442,5 @@ class _MapScreenState extends State<MapScreen> {
       ),
     );
   }
+}
 }

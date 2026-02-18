@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class GooglePlacesApi {
+
   static const String apiKey = "AIzaSyD_wPnI9Q3GH9JENdTqSAwOe_caaccUt84";
 
   /// 🔹 Buscar lugar cercano al tocar el mapa
@@ -9,6 +10,8 @@ class GooglePlacesApi {
     double lat,
     double lng,
   ) async {
+      double lat, double lng) async {
+
     final url =
         "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
         "?location=$lat,$lng"
@@ -44,6 +47,23 @@ class GooglePlacesApi {
       'wheelchair_accessible_entrance',
       'icon',
     ].join(',');
+  static Future<Map<String, dynamic>?> getPlaceDetails(
+      String placeId) async {
+
+    // 🆕 Ahora pide todos los campos nuevos del modelo
+    final fields = [
+  'place_id',
+  'name',
+  'vicinity',
+  'formatted_address',
+  'geometry',
+  'types',
+  'photos',
+  'business_status',
+  'url',
+  'wheelchair_accessible_entrance',
+  'icon',
+].join(',');
 
     final url =
         "https://maps.googleapis.com/maps/api/place/details/json"
@@ -72,5 +92,10 @@ class GooglePlacesApi {
   // 🆕 Construye la lista completa de URLs de fotos de un hito
   static List<String> buildPhotoUrls(List<String> references) {
     return references.map((ref) => getPhotoUrl(ref)).toList();
+  }
+}
+    return references
+        .map((ref) => getPhotoUrl(ref))
+        .toList();
   }
 }
