@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "6160819303",
+    "project_id": "remblah-cs",
+    "storage_bucket": "remblah-cs.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6160819303:android:044dca1e5b9029c4a9e0c2",
+        "android_client_info": {
+          "package_name": "com.example.verygoodcore.my_secure_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTRKhO7KCHEZJMdYZ8_D9cD3u2-rfgHx4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

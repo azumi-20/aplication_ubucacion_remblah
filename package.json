@@ -1,0 +1,19 @@
+{
+  "name": "my_secure_app",
+  "version": "1.0.0",
+  "description": "![coverage][coverage_badge] [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link] [![License: MIT][license_badge]][license_link]",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^12.9.0"
+  }
+}
