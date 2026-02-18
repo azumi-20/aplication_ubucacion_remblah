@@ -22,6 +22,7 @@ class TramosScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
+          // banner de contenido offline
           Container(
             width: double.infinity,
             color: const Color(0xFFE8F5E9),
@@ -42,12 +43,17 @@ class TramosScreen extends StatelessWidget {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
+                  .collection('tramos')
+                  .doc('tramo')
                   .collection('tramo')
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Center(
-                    child: Text("Error: ${snapshot.error}"),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text("Error técnico: ${snapshot.error}"),
+                    ),
                   );
                 }
 
@@ -56,7 +62,9 @@ class TramosScreen extends StatelessWidget {
                 }
 
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text("No hay tramos disponibles"));
+                  return const Center(
+                    child: Text("No hay tramos disponibles en Firebase"),
+                  );
                 }
 
                 final docs = snapshot.data!.docs;
@@ -69,7 +77,10 @@ class TramosScreen extends StatelessWidget {
 
                     final tramo = TramoModel(
                       id: data['id']?.toString() ?? docs[index].id,
-                      nombre: data['nombre'] ?? 'Sin nombre',
+
+                      nombre: (data['nombre'] ?? 'Sin nombre')
+                          .toString()
+                          .replaceAll('"', ''),
                       distancia: data['distancia'] ?? '0 km',
                       dificultad: data['dificultad'] ?? 'N/A',
                       tiempo: data['tiempo'] ?? '--',
