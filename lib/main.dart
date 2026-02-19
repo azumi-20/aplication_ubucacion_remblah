@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
           surface: const Color(0xFFF5F5DC),
         ),
       ),
-      home: const HomeScreen(),
+      home: const WelcomePage(),
     );
   }
 }

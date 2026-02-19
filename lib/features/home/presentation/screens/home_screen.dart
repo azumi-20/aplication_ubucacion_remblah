@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_secure_app/features/comunidad/screens/comunidad_screen.dart';
 import 'package:my_secure_app/features/events/presentation/screens/events_screen.dart';
 import 'package:my_secure_app/features/tramos/presentation/screens/tramos_screen.dart';
 import 'package:my_secure_app/features/map/presentation/screens/map_screen.dart';
-import '../widgets/featured_map_card.dart';
+import 'package:my_secure_app/features/auth/presentation/pages/perfil_page.dart';
 import '../widgets/category_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,38 +15,40 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Índice 1 = explorar (Home)
   int _currentIndex = 1;
 
-  // Listado de pantallas para el BottomNavigationBar
   late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
-    _pages = [
-      const MapScreen(),                              // Índice 0
-      const HomeScreenContent(),                      // Índice 1
-      const EventsScreen(),                           // Índice 2
-      const Center(child: Text("Pantalla de Perfil")),// Índice 3
+    _pages = const [
+      MapScreen(),
+      HomeScreenContent(),
+      EventsScreen(),
+      PerfilPage(),
     ];
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Muestra la página según el índice seleccionado
-      body: _pages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // evita que se muevan los íconos
+        type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         selectedItemColor: const Color(0xFF3A5F0B),
         unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+        onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.map), label: "Mapa"),
           BottomNavigationBarItem(icon: Icon(Icons.explore), label: "Explorar"),
@@ -57,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Widget con el home
 class HomeScreenContent extends StatelessWidget {
   const HomeScreenContent({super.key});
 
@@ -66,107 +68,104 @@ class HomeScreenContent extends StatelessWidget {
     return SafeArea(
       child: Column(
         children: [
-          // APP BAR PERSONALIZADA
-          _buildCustomAppBar(),
-
-          // CONTENIDO SCROLLABLE
+          _buildTopBar(),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeroImage(),
+                  const SizedBox(height: 10),
+
+                  const Text(
+                    "Tramos del Camino",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  _buildTramosScroll(context),
+
                   const SizedBox(height: 24),
+
                   const Text(
                     "Explora el Camino",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
+
                   const Text(
                     "Tu guía comunitaria para el turismo rural",
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
                   ),
-                  const SizedBox(height: 20),
-                  const FeaturedMapCard(),
-                  const SizedBox(height: 28),
+
+                  const SizedBox(height: 24),
+
+                  _buildInteractiveMapCard(context),
+
+                  const SizedBox(height: 32),
+
                   const Text(
                     "Explorar por Categoría",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
+
                   const SizedBox(height: 16),
 
-                  // GRID DE CATEGORÍAS
                   GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     crossAxisCount: 2,
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 16,
+                    childAspectRatio: 1.4,
                     children: [
-                      // 1. TRAMOS
+                      _buildCat(
+                        context,
+                        Icons.route,
+                        "Tramos",
+                        const TramosScreen(),
+                      ),
+                      _buildCat(
+                        context,
+                        Icons.map_outlined,
+                        "Mapa",
+                        const MapScreen(),
+                      ),
+                      _buildCat(
+                        context,
+                        Icons.location_on_outlined,
+                        "Hitos",
+                        const MapScreen(),
+                      ),
+                      _buildCat(
+                        context,
+                        Icons.forest_outlined,
+                        "Comunidades",
+                        const ComunidadScreen(),
+                      ),
+                      _buildCat(
+                        context,
+                        Icons.event,
+                        "Eventos",
+                        const EventsScreen(),
+                      ),
+
                       GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const TramosScreen(),
-                          ),
-                        ),
+                        onTap: () {},
                         child: const CategoryCard(
-                          icon: Icons.route,
-                          title: "Tramos",
+                          icon: Icons.grid_view,
+                          title: "Más",
                         ),
                       ),
-
-                      // 2. MAPA
-                      GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const MapScreen()),
-                        ),
-                        child: const CategoryCard(
-                          icon: Icons.map,
-                          title: "Mapa",
-                        ),
-                      ),
-
-                      // 3. HITOS / QR
-                      const CategoryCard(
-                        icon: Icons.location_on,
-                        title: "Hitos / QR",
-                      ),
-
-                      // 4. COMUNIDADES
-                      GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ComunidadScreen(),
-                          ),
-                        ),
-                        child: const CategoryCard(
-                          icon: Icons.forest,
-                          title: "Comunidades",
-                        ),
-                      ),
-
-                      // 5. EVENTOS
-                      GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const EventsScreen(),
-                          ),
-                        ),
-                        child: const CategoryCard(
-                          icon: Icons.event,
-                          title: "Eventos",
-                        ),
-                      ),
-
-                      const CategoryCard(icon: Icons.grid_view, title: "Más"),
                     ],
                   ),
+
                   const SizedBox(height: 30),
+
                   const Center(
                     child: Text(
                       "230 km de historia, naturaleza y comunidad",
@@ -176,6 +175,8 @@ class HomeScreenContent extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -185,65 +186,201 @@ class HomeScreenContent extends StatelessWidget {
     );
   }
 
-  // AppBar personalizada con indicador de offline
-  Widget _buildCustomAppBar() {
+  // TOP BAR
+  Widget _buildTopBar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.all(16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.green.shade100,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.cloud_done, size: 16, color: Colors.green),
-                SizedBox(width: 6),
-                Text(
-                  "OFFLINE READY",
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
                 ),
-              ],
-            ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE8F5E9),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(
+                      Icons.cloud_done_outlined,
+                      color: Colors.green,
+                      size: 18,
+                    ),
+                    SizedBox(width: 6),
+                    Text(
+                      "OFFLINE READY",
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                "Camino de los Sueños",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ],
           ),
-          const Text(
-            "Camino de los Sueños",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          const CircleAvatar(
+            backgroundColor: Color(0xFFE0E0E0),
+            child: Icon(Icons.person, color: Colors.white),
           ),
-          const Icon(Icons.account_circle, size: 28),
         ],
       ),
     );
   }
 
-  Widget _buildHeroImage() {
-    return ClipRRect(
+  Widget _buildTramosScroll(BuildContext context) {
+    return SizedBox(
+      height: 180,
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('tramos').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text("Error cargando tramos"),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text("No hay tramos disponibles"),
+            );
+          }
+
+          final docs = snapshot.data!.docs;
+
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              final data = docs[index].data() as Map<String, dynamic>;
+
+              return GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const TramosScreen()),
+                ),
+                child: Container(
+                  width: 280,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        data['imagen_url'] ?? "https://via.placeholder.com/300",
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.7),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      data['nombre'] ?? "Tramo",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  // MAPA INTERACTIVO
+  Widget _buildInteractiveMapCard(BuildContext context) {
+    return InkWell(
       borderRadius: BorderRadius.circular(16),
-      child: Stack(
-        alignment: Alignment.bottomLeft,
-        children: [
-          Image.network(
-            "https://images.unsplash.com/photo-1501854140801-50d01698950b",
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const MapScreen()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5F5F5),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: const Color(0xFF3A5F0B),
+            width: 2,
           ),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            color: Colors.black.withOpacity(0.4),
-            child: const Text(
-              "Valle de la Esperanza, Tramo 2",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+        ),
+        child: Row(
+          children: const [
+            Icon(
+              Icons.map,
+              color: Color(0xFF3A5F0B),
+              size: 30,
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                "Mapa Interactivo\nExplora 230 km de tramos y puntos",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-        ],
+            Icon(
+              Icons.arrow_forward_ios,
+              color: Color(0xFF3A5F0B),
+              size: 18,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCat(
+    BuildContext context,
+    IconData icon,
+    String title,
+    Widget page,
+  ) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => page),
+      ),
+      child: CategoryCard(
+        icon: icon,
+        title: title,
       ),
     );
   }
